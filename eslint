@@ -1,0 +1,75 @@
+root: true
+env:
+  es2021: true
+extends:
+  - eslint:recommended # eslintの推奨ルール
+  - plugin:@typescript-eslint/recommended # typescript用の推奨ルール
+  - plugin:@typescript-eslint/recommended-requiring-type-checking # 型チェックに関わる推奨ルール
+parser: '@typescript-eslint/parser'
+parserOptions:
+  project: ./tsconfig.json
+plugins:
+  - '@typescript-eslint'
+rules:
+  #####################
+  # eslint
+  #####################
+  "no-console": [ "error" ] # console.log使用する
+  "eol-last": [ "error", "always"] #ファイルの最後が改行でない場合にエラー
+  "padded-blocks": [ 2, { "blocks": "never" } ] # class内のステートメント間に必ず１行空ける
+  "class-methods-use-this": [ "error" ] # thisを使っていないクラスメソッドがエラー
+  "no-useless-catch": [ "warn" ] # catchのしてthrowするだけだとエラー //TODO：なんでか調査
+
+  # typescript-eslintと重複するルールの無効化
+  'no-magic-numbers': 'off'
+  'no-throw-literal': 'off'
+  'no-unused-expressions': 'off'
+  'no-shadow': 'off'
+  'no-redeclare': 'off'
+  'no-dupe-class-members': 'off'
+  'no-duplicate-imports': 'off'
+  'no-loop-func': 'off'
+
+  #####################
+  # typescript-eslint
+  #####################
+
+  ## plugin:@typescript-eslint/recommendedで設定したルールの変更
+  '@typescript-eslint/no-empty-function': off # 空の関数は許容 スケルトン用
+  '@typescript-eslint/no-empty-interface': off # 空のinterfaceは許容 スケルトン用
+
+  ## plugin:@typescript-eslint/recommended-requiring-type-checkingで設定したルールの変更
+  '@typescript-eslint/restrict-plus-operands': ['error', {'checkCompoundAssignments': true}]
+
+  ## その他必要なルールの設定
+  # コードの自動整形 prettier非対応のフォーマットルール
+  '@typescript-eslint/array-type': [ 'error', { 'default': 'generic' } ] # const x: Array<string> = ['a', 'b']; const y: ReadonlyArray<string> = ['a', 'b'];
+  '@typescript-eslint/consistent-type-imports': [ 'error', { 'prefer': 'type-imports' } ]
+
+  # 構文チェック
+  '@typescript-eslint/no-magic-numbers': ['error', { 'ignoreEnums': true, 'ignore': [0, 1] }] # プティミティブ形を定義せず使用するとエラー
+  '@typescript-eslint/switch-exhaustiveness-check': 'error' # switch caseに漏れあればエラー
+  '@typescript-eslint/no-throw-literal': 'error' # リテラルをスローするとエラー
+  '@typescript-eslint/no-shadow': 'error' # upper scopeで既に定義している変数と同じ名前の変数を関数内で定義するとエラー
+  '@typescript-eslint/no-redeclare': 'error' # 同じ変数名で再宣言を許可しない varを禁止できればいいけどそんなルールはなさそう
+  '@typescript-eslint/no-require-imports': 'error' # requireを使用したimportを許可しない requireで対応できる方法がわかるまで
+  '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'error' # boolean型の変数をbooleanと比較するとエラー　（if(isNum === true) ...）
+  '@typescript-eslint/no-unnecessary-condition': 'error' # 絶対trueまたはfalseにならない判定があればエラー
+  '@typescript-eslint/no-unsafe-argument': 'error' # 関数を呼び出す時に、any型の引数を設定した場合エラー
+  '@typescript-eslint/no-unused-expressions': 'error' # 未使用の式が存在する場合エラー
+  '@typescript-eslint/prefer-includes': 'error' # indexOfをincludesに置換できる場合にエラー
+  '@typescript-eslint/prefer-literal-enum-member': 'error' # enumのメンバーにリテラル以外を使用していた場合エラー
+  '@typescript-eslint/prefer-string-starts-ends-with': 'error' # startsWith, endsWithに置換できる処理がある場合エラー
+  '@typescript-eslint/prefer-ts-expect-error': 'error' # @ts-ignoresを使っていた場合にエラー。@ts-expect-errorを促す（TypeScript3.9からサポート）
+  '@typescript-eslint/consistent-type-assertions': ['error', {'assertionStyle': 'never'}]
+  '@typescript-eslint/require-array-sort-compare': 'error' # sortは文字列に置換してアルファベット順にソートするので、compare引数なしで使用していた場合にエラー
+  '@typescript-eslint/no-dupe-class-members': 'error' # 同じ名前のクラスメンバーを検出
+  '@typescript-eslint/no-duplicate-imports': 'error' # 同じファイルからのimportを分けて書いているとエラー
+  '@typescript-eslint/no-invalid-void-type': 'error' # 戻り型またはジェネリック型引数以外でのvoid型の使用を禁止
+  '@typescript-eslint/no-loop-func': 'error' # 安全でない参照を含むループ内の関数を許可しません（たとえば、外部スコープの上書き可能な変数の参照(var, let)）
+  '@typescript-eslint/explicit-member-accessibility': 'error' # アクセス修飾子を指定が必須
+  '@typescript-eslint/strict-boolean-expressions': ['error', { # boolean型が予測される式(if文の条件句)でboolean型以外の使用を禁止 デフォルトで、string型とnumber型とオブジェクト型は許可されているため禁止にする
+      'allowString': false,
+      'allowNumber': false,
+      'allowNullableObject': false
+  }]
